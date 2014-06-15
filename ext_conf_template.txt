@@ -1,0 +1,35 @@
+# customsubcategory=banner=LLL:EXT:cwenvbanner/locallang.xml:Banner
+# customsubcategory=fe=LLL:EXT:cwenvbanner/locallang.xml:Frontend
+# customsubcategory=be=LLL:EXT:cwenvbanner/locallang.xml:Backend
+
+# cat=basic/banner/1; type=boolean; label= Shows the environment in the banner
+showEnvironment = 1
+
+# cat=basic/banner/2; type=input; label= Shows the environment in the banner
+envName = DEV
+
+# cat=basic/banner/3; type=input; label= Take the envName from the given SERVER variable (e.g. ENV -> $_SERVER['ENV']), overrides envName!
+takeEnvNameFromServerVariable = 
+
+# cat=basic/banner/4; type=input; label= Simple templating for the banner text (Available markers: sitename, env)
+bannerTemplate = ###sitename### - ###env###
+
+# cat=basic/banner/5; type=input; label= The CSS used for both banners
+bannerInlineCss = z-index: 10000; position: fixed; top: 0px; left: 0px; border: 5px #FF0000 solid; background: #FF0000; colour: #FFFFFF;
+
+## windowTitleTemplate = ###env### - ###title###
+
+# cat=basic/fe/2; type=boolean; label= Show Banner in Frontend if Backend User is logged in
+showFEBannerIfBEUserIsLoggedIn = 1
+
+# cat=basic/fe/3; type=boolean; label= If showFEBannerIfBEUserIsLoggedIn = 1, Banner will only be shown for the listed user IDs (separated with comma)
+showFEBannerForBEUserIdsOnly = 
+
+# cat=basic/fe/4; type=boolean; label= Always show banner (will override showIfBEUserIsLoggedIn and ignore showFEBannerForBEUserIdsOnly)
+showFEBannerAlways = 0
+
+# cat=basic/be/1; type=boolean; label= Show banner in Backend
+showBEBanner = 1
+
+# cat=basic/be/2; type=input; label= If showBEBanner = 1, Banner will only be shown for the listed user IDs (separated with comma)
+showBEBannerForBEUserIdsOnly = 
