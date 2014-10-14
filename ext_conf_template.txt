@@ -2,34 +2,37 @@
 # customsubcategory=fe=LLL:EXT:cwenvbanner/locallang.xml:Frontend
 # customsubcategory=be=LLL:EXT:cwenvbanner/locallang.xml:Backend
 
-# cat=basic/banner/1; type=boolean; label= Shows the environment in the banner
+# cat=basic/banner/1; type=boolean; label=Show environment label:Shows the environment label in the banner
 showEnvironment = 1
 
-# cat=basic/banner/2; type=input; label= Shows the environment in the banner
+# cat=basic/banner/2; type=input; label=Label of the environment:The environment label (e.g. DEV, PRODUCTION)
 envName = DEV
 
-# cat=basic/banner/3; type=input; label= Take the envName from the given SERVER variable (e.g. ENV -> $_SERVER['ENV']), overrides envName!
+# cat=basic/banner/3; type=input; label=Take env label from server variable:Take the envName from the given SERVER variable (e.g. ENV -> $_SERVER['ENV']), overrides envName!
 takeEnvNameFromServerVariable = 
 
-# cat=basic/banner/4; type=input; label= Simple templating for the banner text (Available markers: sitename, env)
+# cat=basic/banner/4; type=input; label=Banner template:Simple templating for the banner text (Available markers: sitename, env)
 bannerTemplate = ###sitename### - ###env###
 
-# cat=basic/banner/5; type=input; label= The CSS used for both banners
+# cat=basic/banner/5; type=options[Green=green,Yellow=yellow,Red=red,Use Custom CSS=custom]; label=Banner Style:Select a pre-defined banner style
+bannerStyle = custom
+
+# cat=basic/banner/6; type=input; label=Custom Banner CSS:The CSS used for both FE & BE banners, if "Use Custom CSS" is selected for "Banner Style"
 bannerInlineCss = z-index: 10000; position: fixed; top: 0px; left: 0px; border: 5px #FF0000 solid; background: #FF0000; colour: #FFFFFF;
 
 ## windowTitleTemplate = ###env### - ###title###
 
-# cat=basic/fe/2; type=boolean; label= Show Banner in Frontend if Backend User is logged in
+# cat=basic/fe/2; type=boolean; label=FE Banner if BE User is logged in:Show Banner in Frontend if Backend User is logged in
 showFEBannerIfBEUserIsLoggedIn = 1
 
-# cat=basic/fe/3; type=boolean; label= If showFEBannerIfBEUserIsLoggedIn = 1, Banner will only be shown for the listed user IDs (separated with comma)
+# cat=basic/fe/3; type=input; label=FE Banner for certain BE User IDs:If showFEBannerIfBEUserIsLoggedIn = 1, Banner will only be shown for the listed user IDs (separated with comma)
 showFEBannerForBEUserIdsOnly = 
 
-# cat=basic/fe/4; type=boolean; label= Always show banner (will override showIfBEUserIsLoggedIn and ignore showFEBannerForBEUserIdsOnly)
+# cat=basic/fe/4; type=boolean; label= Always show FE banner: Always show Frontend banner (will override showIfBEUserIsLoggedIn and ignore showFEBannerForBEUserIdsOnly)
 showFEBannerAlways = 0
 
-# cat=basic/be/1; type=boolean; label= Show banner in Backend
+# cat=basic/be/1; type=boolean; label= Show banner in BE:Shows the banner in the Backend
 showBEBanner = 1
 
-# cat=basic/be/2; type=input; label= If showBEBanner = 1, Banner will only be shown for the listed user IDs (separated with comma)
+# cat=basic/be/2; type=input; label=BE Banner for certain BE User IDs:If showBEBanner = 1, Banner will only be shown for the listed user IDs (separated with comma)
 showBEBannerForBEUserIdsOnly = 

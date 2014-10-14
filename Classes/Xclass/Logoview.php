@@ -19,7 +19,7 @@ class LogoView extends \TYPO3\CMS\Backend\View\LogoView {
 	 */
 	public function render() {
 		// Autoloader doesn't seem to work here
-		require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('cwenvbanner') . "class.tx_cwenvbanner.php";
+		require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('cwenvbanner') . 'class.tx_cwenvbanner.php';
 		$envBanner = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_cwenvbanner');
 		
 		if ($envBanner->isBackendBannerShown()) {

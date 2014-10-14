@@ -35,7 +35,7 @@ class tx_cwenvbannerTest extends tx_phpunit_testcase {
 		
 		$this->fixture = t3lib_div::makeInstance('tx_cwenvbanner');
 		
-		$this->fixture->setConf($this->defaultConfiguration);
+		$this->fixture->init($this->defaultConfiguration);
 		
 		$this->testingFramework = new Tx_Phpunit_Framework('tx_cwenvbanner');
 		
@@ -91,18 +91,55 @@ class tx_cwenvbannerTest extends tx_phpunit_testcase {
 
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::isBackendBannerShown
+	 * @covers tx_cwenvbanner::isShownInFrontendForLoggedInBEUser
 	 */
-	public function testTest() {
-		
-		$this->assertFalse(TRUE, 'One more todo');
-		
-		/*
-		$testIns = t3lib_div::makeInstance('ux_TYPO3Logo');
-		
-		$tesResult = $testIns->render();*/
+	public function frontendBannerIsShownWhenCertainBeUserIsLoggedIn() {
+		$this->fixture->setConf(array_merge(
+			$this->defaultConfiguration,
+			array(
+				'showFEBannerIfBEUserIsLoggedIn' => 1,
+				'showFEBannerForBEUserIdsOnly' => '1,3,13',
+			)
+		));
+
+		$GLOBALS['TSFE']->beUserLogin = 1;
+		$GLOBALS['BE_USER']->user['uid'] = 3;
+
+		$this->assertTrue(
+			$this->fixture->isFrontendBannerShown(),
+			'Frontend Banner was not shown, although BE User with configured ID is logged in'
+		);
+
+		$GLOBALS['BE_USER']->user['uid'] = 2;
+
+		$this->assertFalse(
+			$this->fixture->isFrontendBannerShown(),
+			'Frontend Banner was shown, although BE User with ID other than the configured is logged in'
+		);
 	}
-	
+
+	/**
+	 * @test
+	 * @covers tx_cwenvbanner::isShownInFrontendForLoggedInBEUser
+	 */
+	public function frontendBannerIsShownWhenNotRestrictedToLoggedInBeUser() {
+		$this->fixture->setConf(array_merge(
+			$this->defaultConfiguration,
+			array(
+				'showFEBannerIfBEUserIsLoggedIn' => 1,
+				'showFEBannerForBEUserIdsOnly' => '',
+			)
+		));
+
+		$GLOBALS['TSFE']->beUserLogin = 1;
+		$GLOBALS['BE_USER']->user['uid'] = 3;
+
+		$this->assertTrue(
+			$this->fixture->isFrontendBannerShown(),
+			'Frontend Banner was not shown, although it is not restricted to certain BE User IDs'
+		);
+	}
+
 	/**
 	 * @test
 	 * @covers tx_cwenvbanner::isBackendBannerShown
@@ -133,7 +170,7 @@ class tx_cwenvbannerTest extends tx_phpunit_testcase {
 		$this->assertTrue($this->fixture->isBackendBannerShown());
 		
 		$this->fixture->setConf(array_merge(
-			$this->defaultConfiguration, array('showBEBannerForBEUserIdsOnly' => '1,3')
+			$this->defaultConfiguration, array('showBEBannerForBEUserIdsOnly' => '1,3,13')
 			));
 		
 		$GLOBALS['BE_USER']->user['uid'] = 2;
@@ -150,6 +187,8 @@ class tx_cwenvbannerTest extends tx_phpunit_testcase {
 			'Backend Banner is not shown, although current user ID is amongst the allowed IDs'
 			);
 	}
+
+
 	
 	/**
 	 * @test
@@ -183,9 +222,7 @@ class tx_cwenvbannerTest extends tx_phpunit_testcase {
 			));
 		
 		$GLOBALS['TSFE']->beUserLogin = 1;
-		
-		$GLOBALS['TSFE']->content = '<body><div id="someotherdiv"></div></body>';
-		
+
 		$params = array('pObj' => $GLOBALS['TSFE']);
 		
 		$this->fixture->contentPostProc_output($params);
@@ -299,6 +336,104 @@ class tx_cwenvbannerTest extends tx_phpunit_testcase {
 			'The BE banner is not rendered correctly'
 			);
 	}
+
+	/**
+	 * @test
+	 * @covers tx_cwenvbanner::renderFEBanner
+	 * @covers tx_cwenvbanner::renderBEBanner
+	 */
+	public function bannersRenderCustomInlineStyle() {
+		$this->fixture->setConf(array_merge(
+			$this->defaultConfiguration,
+			array(
+				'envName' => 'myEnv',
+				'bannerTemplate' => '###env### - ###sitename###',
+				'bannerInlineCss' => 'background: white;',
+			)
+		));
+
+		$expectedFeBanner = $expectedBeBanner = '<div style="background: white;">myEnv - mySitename</div>';
+
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = 'mySitename';
+
+		$this->assertEquals(
+			$expectedFeBanner,
+			$this->fixture->renderFEBanner(),
+			'The FE banner is not rendered correctly'
+		);
+
+		$this->assertEquals(
+			$expectedBeBanner,
+			$this->fixture->renderBEBanner(),
+			'The BE banner is not rendered correctly'
+		);
+	}
+
+	/**
+	 * @test
+	 * @covers tx_cwenvbanner::renderFEBanner
+	 * @covers tx_cwenvbanner::renderBEBanner
+	 */
+	public function bannersUsePredefinedStyle() {
+		$this->fixture->setConf(array_merge(
+			$this->defaultConfiguration,
+			array(
+				'envName' => 'myEnv',
+				'bannerTemplate' => '###env### - ###sitename###',
+				'bannerInlineCss' => '',
+				'bannerStyle' => 'yellow',
+			)
+		));
+
+		$expectedFeBanner = $expectedBeBanner = '<div style="z-index: 10000; position: fixed; top: 0px; left: 0px; padding: 6px; background: #FFFF00; colour: #000000;">myEnv - mySitename</div>';
+
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = 'mySitename';
+
+		$this->assertEquals(
+			$expectedFeBanner,
+			$this->fixture->renderFEBanner(),
+			'The FE banner is not rendered correctly'
+		);
+
+		$this->assertEquals(
+			$expectedBeBanner,
+			$this->fixture->renderBEBanner(),
+			'The BE banner is not rendered correctly'
+		);
+	}
+
+	/**
+	 * @test
+	 * @covers tx_cwenvbanner::renderFEBanner
+	 * @covers tx_cwenvbanner::renderBEBanner
+	 */
+	public function bannersUseCustomStyle() {
+		$this->fixture->setConf(array_merge(
+			$this->defaultConfiguration,
+			array(
+				'envName' => 'myEnv',
+				'bannerTemplate' => '###env### - ###sitename###',
+				'bannerInlineCss' => 'background: yellow;',
+				'bannerStyle' => 'custom',
+			)
+		));
+
+		$expectedFeBanner = $expectedBeBanner = '<div style="background: yellow;">myEnv - mySitename</div>';
+
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = 'mySitename';
+
+		$this->assertEquals(
+			$expectedFeBanner,
+			$this->fixture->renderFEBanner(),
+			'The FE banner is not rendered correctly'
+		);
+
+		$this->assertEquals(
+			$expectedBeBanner,
+			$this->fixture->renderBEBanner(),
+			'The BE banner is not rendered correctly'
+		);
+	}
 	
 	/**
 	 * @test
@@ -324,19 +459,5 @@ class tx_cwenvbannerTest extends tx_phpunit_testcase {
 			$GLOBALS['TSFE']->content, 
 			'Frontend Banner was not shown, although it is configured as showAlways'
 			);
-	}	
-	
-	/**
-	 * @test
-	 */
-	public function todoColourSelector() {
-		$this->assertTrue(FALSE, 'TODO');
-	}	
-	
-	/**
-	 * @test
-	 */
-	public function todoPageTitle() {
-		$this->assertTrue(FALSE, 'TODO');
-	}	
+	}
 }

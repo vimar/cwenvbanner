@@ -17,7 +17,7 @@ class ux_TYPO3Logo extends TYPO3Logo {
 	 */
 	public function render() {
 		// Autoloader doesn't seem to work here
-		require_once t3lib_extMgm::extPath('cwenvbanner') . "class.tx_cwenvbanner.php";
+		require_once t3lib_extMgm::extPath('cwenvbanner') . 'class.tx_cwenvbanner.php';
 		$envBanner = t3lib_div::makeInstance('tx_cwenvbanner');
 
 		if ($envBanner->isBackendBannerShown()) {

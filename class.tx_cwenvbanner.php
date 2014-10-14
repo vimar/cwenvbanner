@@ -12,7 +12,17 @@ class tx_cwenvbanner implements t3lib_Singleton {
 	 * @var string
 	 */
 	protected $extKey = 'cwenvbanner';
-	
+
+	/**
+	 * The predefined banner styles
+	 * @var array
+	 */
+	protected $bannerStyles = array(
+		'green'  => 'z-index: 10000; position: fixed; top: 0px; left: 0px; padding: 6px; background: #00FF00; colour: #000000;',
+		'yellow' => 'z-index: 10000; position: fixed; top: 0px; left: 0px; padding: 6px; background: #FFFF00; colour: #000000;',
+		'red'    => 'z-index: 10000; position: fixed; top: 0px; left: 0px; padding: 6px; background: #FF0000; colour: #000000;'
+	);
+
 	/**
 	 * Extension configuration
 	 * @var array
@@ -23,7 +33,7 @@ class tx_cwenvbanner implements t3lib_Singleton {
 	 * Store the bannerText here
 	 * @var string
 	 */
-	protected $bannerText = null;
+	protected $bannerText = NULL;
 	
 	/**
 	 * Constructor
@@ -31,8 +41,23 @@ class tx_cwenvbanner implements t3lib_Singleton {
 	 */
 	public function __construct() {
 		if(isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey])) {
-			 $this->setConf(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]));
+			 $this->init(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]));
 		}
+	}
+
+	/**
+	 * Initialize this instance
+	 * @param array $conf (Optional) Configuration array
+	 * @return \tx_cwenvbanner
+	 */
+	public function init($conf = NULL) {
+		if($conf !== NULL) {
+			$this->setConf($conf);
+		}
+
+		$this->bannerText = NULL;
+
+		return $this;
 	}
 	
 	/**
@@ -69,15 +94,27 @@ class tx_cwenvbanner implements t3lib_Singleton {
 	protected function isBeUserLoggedIn() {
 		return ($GLOBALS['TSFE']->beUserLogin == 1);
 	}
-	
+
 	/**
 	 * Whether banner should be shown in frontend when a BE user is logged in
 	 * @return boolean
 	 */
 	protected function isShownInFrontendForLoggedInBEUser() {
-		return (isset($this->conf['showFEBannerIfBEUserIsLoggedIn']) 
-			&& $this->conf['showFEBannerIfBEUserIsLoggedIn'] == 1 
-			&& $this->isBeUserLoggedIn());
+		if (!empty($this->conf['showFEBannerIfBEUserIsLoggedIn'])) {
+			if ($this->isBeUserLoggedIn()) {
+				if (!empty($this->conf['showFEBannerForBEUserIdsOnly'])) {
+					$userIdsArr = explode(',', $this->conf['showFEBannerForBEUserIdsOnly']);
+
+					if (in_array($GLOBALS['BE_USER']->user['uid'], $userIdsArr)) {
+						return TRUE;
+					}
+				} else {
+					return TRUE;
+				}
+			}
+		}
+
+		return FALSE;
 	}
 	
 	
@@ -87,16 +124,16 @@ class tx_cwenvbanner implements t3lib_Singleton {
 	 */
 	protected function isShownInBackendForLoggedInBEUser() {
 		if (!empty($this->conf['showBEBannerForBEUserIdsOnly'])) {
-			$tempArr = explode(',', $this->conf['showBEBannerForBEUserIdsOnly']);
+			$userIdsArr = explode(',', $this->conf['showBEBannerForBEUserIdsOnly']);
 			
-			if(in_array($GLOBALS['BE_USER']->user['uid'], $tempArr)) {
-				return true;
+			if(in_array($GLOBALS['BE_USER']->user['uid'], $userIdsArr)) {
+				return TRUE;
 			}
 		} else {
-			return true;
+			return TRUE;
 		}
 		
-		return false;
+		return FALSE;
 	}
 	
 	/**
@@ -142,7 +179,7 @@ class tx_cwenvbanner implements t3lib_Singleton {
 
 		if($this->isFrontendBannerShown()) {
 			$outputArray = array();
-			preg_match("/<body[^<]*>/", $feobj->content, $outputArray);
+			preg_match('/<body[^<]*>/', $feobj->content, $outputArray);
 
 			// We expect the first occurence of <body> to be the correct one
 			// there should be only one anyway
@@ -152,7 +189,7 @@ class tx_cwenvbanner implements t3lib_Singleton {
 		}
 
 		$outputArray = array();
-		preg_match("/<title[^<]*>/", $feobj->content, $outputArray);
+		preg_match('/<title[^<]*>/', $feobj->content, $outputArray);
 
 		// We expect the first occurence of <title> to be the correct one
 		// there should be only one anyway
@@ -175,11 +212,19 @@ class tx_cwenvbanner implements t3lib_Singleton {
 	 * @return string
 	 */
 	protected function getInlineCss() {
-		$css = (!empty($this->conf['bannerInlineCss'])) 
-			?  ' style="' . $this->conf['bannerInlineCss'] . '"'
-			: '';
+		if (!isset($this->conf['bannerStyle'])
+			|| $this->conf['bannerStyle'] == 'custom'
+			|| !isset($this->bannerStyles[$this->conf['bannerStyle']]))  {
+			$style = $this->conf['bannerInlineCss'];
+		} else {
+			$style = $this->bannerStyles[$this->conf['bannerStyle']];
+		}
 
-		return $css;
+		if (empty($style)) {
+			return '';
+		} else {
+			return ' style="' . $style . '"';
+		}
 	}
 	
 	/**
