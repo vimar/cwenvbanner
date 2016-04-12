@@ -1,18 +1,17 @@
 <?php
 
+use Carstenwindler\Cwenvbanner\Renderer;
+use TYPO3\CMS\Core\Tests\UnitTestCase;
+
+
 /**
- * @covers tx_cwenvbanner
+ * @covers \Carstenwindler\Cwenvbanner\Renderer
  */
-class tx_cwenvbannerTest extends tx_phpunit_testcase {
+class RendererTest extends UnitTestCase {
 	/**
-	 * @var tx_cwenvbanner
+	 * @var Renderer
 	 */
 	protected $fixture;
-	
-	/**
-	 * @var Tx_Phpunit_Framework
-	 */
-	protected $testingFramework;
 	
 	/**
 	 * @var array
@@ -33,13 +32,10 @@ class tx_cwenvbannerTest extends tx_phpunit_testcase {
 			'showBEBannerForBEUserIdsOnly' => 0, 
 			);
 		
-		$this->fixture = t3lib_div::makeInstance('tx_cwenvbanner');
+		$this->fixture = new Renderer();
 		
 		$this->fixture->init($this->defaultConfiguration);
 		
-		$this->testingFramework = new Tx_Phpunit_Framework('tx_cwenvbanner');
-		
-		$this->testingFramework->createFakeFrontEnd();
 		$GLOBALS['TSFE']->content = '<body><div id="someotherdiv"></div></body>';
 	}
 	
