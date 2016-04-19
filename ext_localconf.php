@@ -14,12 +14,12 @@ if (TYPO3_MODE === 'BE') {
 }
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-output']['cwenvbanner']
-	= 'EXT:cwenvbanner/Classes/Renderer.php:&Carstenwindler\\Cwenvbanner\\Renderer->contentPostProcOutputHook';
+	= 'EXT:cwenvbanner/Classes/Renderer.php:&CarstenWindler\\Cwenvbanner\\Renderer->contentPostProcOutputHook';
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['renderPreProcess']['cwenvbanner']
-	= 'EXT:cwenvbanner/Classes/Renderer.php:&Carstenwindler\\Cwenvbanner\\Renderer->backendRenderPreProcessHook';
+	= 'EXT:cwenvbanner/Classes/Renderer.php:&CarstenWindler\\Cwenvbanner\\Renderer->backendRenderPreProcessHook';
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['renderPostProcess']['cwenvbanner']
-		= 'EXT:cwenvbanner/Classes/Renderer.php:&Carstenwindler\\Cwenvbanner\\Renderer->backendRenderPostProcessHook';
+		= 'EXT:cwenvbanner/Classes/Renderer.php:&CarstenWindler\\Cwenvbanner\\Renderer->backendRenderPostProcessHook';
 
 ?>

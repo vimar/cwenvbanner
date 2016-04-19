@@ -3,7 +3,6 @@
 use Carstenwindler\Cwenvbanner\Renderer;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
-
 /**
  * @covers \Carstenwindler\Cwenvbanner\Renderer
  */
@@ -35,7 +34,9 @@ class RendererTest extends UnitTestCase {
 		$this->fixture = new Renderer();
 		
 		$this->fixture->init($this->defaultConfiguration);
-		
+
+		// This way we don't need to start the whole FE rendering process
+		$GLOBALS['TSFE'] = new \stdClass();
 		$GLOBALS['TSFE']->content = '<body><div id="someotherdiv"></div></body>';
 	}
 	
@@ -50,11 +51,11 @@ class RendererTest extends UnitTestCase {
 	 * @covers tx_cwenvbanner::contentPostProc_output
 	 */
 	public function doNotShowFrontendBannerIfNoConfigurationWasFound() {
-		$this->fixture->setConf(null);
+		$this->fixture->setConf([]);
 		
 		$params = array('pObj' => $GLOBALS['TSFE']);
 		
-		$this->fixture->contentPostProc_output($params);
+		$this->fixture->contentPostProcOutputHook($params);
 		
 		$this->assertEquals(
 			'<body><div id="someotherdiv"></div></body>', 
@@ -76,10 +77,10 @@ class RendererTest extends UnitTestCase {
 		
 		$params = array('pObj' => $GLOBALS['TSFE']);
 
-		$this->fixture->contentPostProc_output($params);
+		$this->fixture->contentPostProcOutputHook($params);
 		
 		$this->assertEquals(
-			'<body>' . $this->fixture->renderFEBanner(). '<div id="someotherdiv"></div></body>', 
+			'<body>' . $this->fixture->renderFrontendBanner(). '<div id="someotherdiv"></div></body>', 
 			$GLOBALS['TSFE']->content, 
 			'Frontend Banner was not shown, although it is configured and BE user is logged in'
 			);
@@ -199,7 +200,7 @@ class RendererTest extends UnitTestCase {
 		
 		$params = array('pObj' => $GLOBALS['TSFE']);
 		
-		$this->fixture->contentPostProc_output($params);
+		$this->fixture->contentPostProcOutputHook($params);
 		
 		$this->assertEquals(
 			'<body><div id="someotherdiv"></div></body>', 
@@ -221,7 +222,7 @@ class RendererTest extends UnitTestCase {
 
 		$params = array('pObj' => $GLOBALS['TSFE']);
 		
-		$this->fixture->contentPostProc_output($params);
+		$this->fixture->contentPostProcOutputHook($params);
 		
 		$this->assertEquals(
 			'<body><div id="someotherdiv"></div></body>', 
@@ -255,13 +256,13 @@ class RendererTest extends UnitTestCase {
 		
 		$this->assertEquals(
 			$expectedFeBanner, 
-			$this->fixture->renderFEBanner(),
+			$this->fixture->renderFrontendBanner(),
 			'The FE banner is not rendered correctly'
 			);
 		
 		$this->assertEquals(
 			$expectedBeBanner, 
-			$this->fixture->renderBEBanner(),
+			$this->fixture->renderBackendBanner(),
 			'The BE banner is not rendered correctly'
 			);
 	}
@@ -290,13 +291,13 @@ class RendererTest extends UnitTestCase {
 		
 		$this->assertEquals(
 			$expectedFeBanner, 
-			$this->fixture->renderFEBanner(),
+			$this->fixture->renderFrontendBanner(),
 			'The FE banner is not rendered correctly'
 			);
 		
 		$this->assertEquals(
 			$expectedBeBanner, 
-			$this->fixture->renderBEBanner(),
+			$this->fixture->renderBackendBanner(),
 			'The BE banner is not rendered correctly'
 			);
 	}
@@ -322,13 +323,13 @@ class RendererTest extends UnitTestCase {
 		
 		$this->assertEquals(
 			$expectedFeBanner, 
-			$this->fixture->renderFEBanner(),
+			$this->fixture->renderFrontendBanner(),
 			'The FE banner is not rendered correctly'
 			);
 		
 		$this->assertEquals(
 			$expectedBeBanner, 
-			$this->fixture->renderBEBanner(),
+			$this->fixture->renderBackendBanner(),
 			'The BE banner is not rendered correctly'
 			);
 	}
@@ -354,13 +355,13 @@ class RendererTest extends UnitTestCase {
 
 		$this->assertEquals(
 			$expectedFeBanner,
-			$this->fixture->renderFEBanner(),
+			$this->fixture->renderFrontendBanner(),
 			'The FE banner is not rendered correctly'
 		);
 
 		$this->assertEquals(
 			$expectedBeBanner,
-			$this->fixture->renderBEBanner(),
+			$this->fixture->renderBackendBanner(),
 			'The BE banner is not rendered correctly'
 		);
 	}
@@ -387,13 +388,13 @@ class RendererTest extends UnitTestCase {
 
 		$this->assertEquals(
 			$expectedFeBanner,
-			$this->fixture->renderFEBanner(),
+			$this->fixture->renderFrontendBanner(),
 			'The FE banner is not rendered correctly'
 		);
 
 		$this->assertEquals(
 			$expectedBeBanner,
-			$this->fixture->renderBEBanner(),
+			$this->fixture->renderBackendBanner(),
 			'The BE banner is not rendered correctly'
 		);
 	}
@@ -420,13 +421,13 @@ class RendererTest extends UnitTestCase {
 
 		$this->assertEquals(
 			$expectedFeBanner,
-			$this->fixture->renderFEBanner(),
+			$this->fixture->renderFrontendBanner(),
 			'The FE banner is not rendered correctly'
 		);
 
 		$this->assertEquals(
 			$expectedBeBanner,
-			$this->fixture->renderBEBanner(),
+			$this->fixture->renderBackendBanner(),
 			'The BE banner is not rendered correctly'
 		);
 	}
@@ -448,10 +449,10 @@ class RendererTest extends UnitTestCase {
 		
 		$params = array('pObj' => $GLOBALS['TSFE']);
 
-		$this->fixture->contentPostProc_output($params);
+		$this->fixture->contentPostProcOutputHook($params);
 		
 		$this->assertEquals(
-			'<body>' . $this->fixture->renderFEBanner(). '<div id="someotherdiv"></div></body>', 
+			'<body>' . $this->fixture->renderFrontendBanner(). '<div id="someotherdiv"></div></body>', 
 			$GLOBALS['TSFE']->content, 
 			'Frontend Banner was not shown, although it is configured as showAlways'
 			);
