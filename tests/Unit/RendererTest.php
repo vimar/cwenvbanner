@@ -1,10 +1,10 @@
 <?php
 
-use Carstenwindler\Cwenvbanner\Renderer;
+use CarstenWindler\Cwenvbanner\Renderer;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
- * @covers \Carstenwindler\Cwenvbanner\Renderer
+ * @covers \CarstenWindler\Cwenvbanner\Renderer
  */
 class RendererTest extends UnitTestCase {
 	/**
@@ -48,7 +48,7 @@ class RendererTest extends UnitTestCase {
 	
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::contentPostProc_output
+	 * @covers Renderer::contentPostProcOutputHook
 	 */
 	public function doNotShowFrontendBannerIfNoConfigurationWasFound() {
 		$this->fixture->setConf([]);
@@ -66,7 +66,7 @@ class RendererTest extends UnitTestCase {
 	
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::contentPostProc_output
+	 * @covers Renderer::contentPostProcOutputHook
 	 */
 	public function frontendBannerIsShownWhenBeUserIsLoggedIn() {
 		$this->fixture->setConf(array_merge(
@@ -88,7 +88,7 @@ class RendererTest extends UnitTestCase {
 
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::isShownInFrontendForLoggedInBEUser
+	 * @covers Renderer::isFrontendBannerShown
 	 */
 	public function frontendBannerIsShownWhenCertainBeUserIsLoggedIn() {
 		$this->fixture->setConf(array_merge(
@@ -117,7 +117,7 @@ class RendererTest extends UnitTestCase {
 
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::isShownInFrontendForLoggedInBEUser
+	 * @covers Renderer::isFrontendBannerShown
 	 */
 	public function frontendBannerIsShownWhenNotRestrictedToLoggedInBeUser() {
 		$this->fixture->setConf(array_merge(
@@ -139,7 +139,7 @@ class RendererTest extends UnitTestCase {
 
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::isBackendBannerShown
+	 * @covers Renderer::isBackendBannerShown
 	 */
 	public function backendBannerIsShown() {
 		$this->fixture->setConf(array_merge(
@@ -157,7 +157,7 @@ class RendererTest extends UnitTestCase {
 	
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::isBackendBannerShown
+	 * @covers Renderer::isBackendBannerShown
 	 */
 	public function backendBannerIsShownForCertainBEUsersOnly() {
 		$this->fixture->setConf(array_merge(
@@ -189,7 +189,7 @@ class RendererTest extends UnitTestCase {
 	
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::contentPostProc_output
+	 * @covers Renderer::contentPostProcOutputHook
 	 */
 	public function frontendBannerIsNotShownWhenNoBeUserIsLoggedIn() {
 		$this->fixture->setConf(array_merge(
@@ -211,7 +211,7 @@ class RendererTest extends UnitTestCase {
 	
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::contentPostProc_output
+	 * @covers Renderer::contentPostProcOutputHook
 	 */
 	public function frontendBannerIsNotShownWhenBeUserIsLoggedIn() {
 		$this->fixture->setConf(array_merge(
@@ -233,8 +233,8 @@ class RendererTest extends UnitTestCase {
 	
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::renderFEBanner
-	 * @covers tx_cwenvbanner::renderBEBanner
+	 * @covers Renderer::renderFrontendBanner
+	 * @covers Renderer::renderBackendBanner
 	 */
 	public function bannersAreRenderedAsConfigured() {
 		$this->fixture->setConf(array_merge(
@@ -269,8 +269,8 @@ class RendererTest extends UnitTestCase {
 	
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::renderFEBanner
-	 * @covers tx_cwenvbanner::renderBEBanner
+	 * @covers Renderer::renderFrontendBanner
+	 * @covers Renderer::renderBackendBanner
 	 */
 	public function bannersAreRenderedAsConfiguredUsingServerVariable() {
 		$this->fixture->setConf(array_merge(
@@ -304,8 +304,8 @@ class RendererTest extends UnitTestCase {
 	
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::renderFEBanner
-	 * @covers tx_cwenvbanner::renderBEBanner
+	 * @covers Renderer::renderFrontendBanner
+	 * @covers Renderer::renderBackendBanner
 	 */
 	public function bannersHaveNoStyleTagIfNoInlineCssConfigured() {
 		$this->fixture->setConf(array_merge(
@@ -336,8 +336,8 @@ class RendererTest extends UnitTestCase {
 
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::renderFEBanner
-	 * @covers tx_cwenvbanner::renderBEBanner
+	 * @covers Renderer::renderFrontendBanner
+	 * @covers Renderer::renderBackendBanner
 	 */
 	public function bannersRenderCustomInlineStyle() {
 		$this->fixture->setConf(array_merge(
@@ -368,8 +368,8 @@ class RendererTest extends UnitTestCase {
 
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::renderFEBanner
-	 * @covers tx_cwenvbanner::renderBEBanner
+	 * @covers Renderer::renderFrontendBanner
+	 * @covers Renderer::renderBackendBanner
 	 */
 	public function bannersUsePredefinedStyle() {
 		$this->fixture->setConf(array_merge(
@@ -401,8 +401,8 @@ class RendererTest extends UnitTestCase {
 
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::renderFEBanner
-	 * @covers tx_cwenvbanner::renderBEBanner
+	 * @covers Renderer::renderFrontendBanner
+	 * @covers Renderer::renderBackendBanner
 	 */
 	public function bannersUseCustomStyle() {
 		$this->fixture->setConf(array_merge(
@@ -434,7 +434,7 @@ class RendererTest extends UnitTestCase {
 	
 	/**
 	 * @test
-	 * @covers tx_cwenvbanner::contentPostProc_output
+	 * @covers Renderer::contentPostProcOutputHook
 	 */
 	public function showFEBannerAlwaysOverwritesOtherSettings() {
 		$this->fixture->setConf(array_merge(

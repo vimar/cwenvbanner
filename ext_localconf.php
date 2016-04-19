@@ -21,5 +21,3 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['renderPreProcess
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['renderPostProcess']['cwenvbanner']
 		= 'EXT:cwenvbanner/Classes/Renderer.php:&CarstenWindler\\Cwenvbanner\\Renderer->backendRenderPostProcessHook';
-
-?>
