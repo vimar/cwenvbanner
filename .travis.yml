@@ -69,4 +69,4 @@ script:
   - >
     echo;
     echo "Running code sniffer";
-    .Build/bin/phpcs --standard=.Build/vendor/typo3-ci/typo3cms/ruleset.xml Classes/
+    .Build/bin/phpcs --standard=.Build/vendor/squizlabs/php_codesniffer/CodeSniffer/Standards/PSR2/ruleset.xml Classes

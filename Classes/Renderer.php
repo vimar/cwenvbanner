@@ -20,309 +20,361 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Environment Banner Renderer
  *
- * @author	Carsten Windler <carsten@carstenwindler.de>
+ * @author    Carsten Windler <carsten@carstenwindler.de>
  */
-class Renderer  {
-	/**
-	 * Extension key
-	 * @var string
-	 */
-	protected $extKey = 'cwenvbanner';
+class Renderer
+{
+    /**
+     * Extension key
+     *
+     * @var string
+     */
+    protected $extKey = 'cwenvbanner';
+    /**
+     * The predefined banner styles
+     *
+     * @var array
+     */
+    protected $bannerStyles = array();
+    /**
+     * Extension configuration
+     *
+     * @var array
+     */
+    protected $conf = array();
+    /**
+     * Store the bannerText here
+     *
+     * @var string
+     */
+    protected $bannerText = null;
 
-	/**
-	 * The predefined banner styles
-	 * @var array
-	 */
-	protected $bannerStyles = array(
-			'green'  => 'z-index: 10000; position: fixed; top: 0px; left: 0px; padding: 6px; background: #00FF00; colour: #000000;',
-			'yellow' => 'z-index: 10000; position: fixed; top: 0px; left: 0px; padding: 6px; background: #FFFF00; colour: #000000;',
-			'red'    => 'z-index: 10000; position: fixed; top: 0px; left: 0px; padding: 6px; background: #FF0000; colour: #000000;'
-	);
+    /**
+     * Constructor
+     *
+     * @return Renderer
+     */
+    public function __construct()
+    {
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey])) {
+            $this->init(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]));
+        }
 
-	/**
-	 * Extension configuration
-	 * @var array
-	 */
-	protected $conf = array();
+        $this->bannerStyles = array(
+            'green' => 'z-index: 10000; position: fixed; top: 0px; ' .
+                'left: 0px; padding: 6px; background: #00FF00; colour: #000000;',
+            'yellow' => 'z-index: 10000; position: fixed; top: 0px; ' .
+                'left: 0px; padding: 6px; background: #FFFF00; colour: #000000;',
+            'red' => 'z-index: 10000; position: fixed; top: 0px; ' .
+                'left: 0px; padding: 6px; background: #FF0000; colour: #000000;'
+        );
+    }
 
-	/**
-	 * Store the bannerText here
-	 * @var string
-	 */
-	protected $bannerText = NULL;
+    /**
+     * Initialize this instance
+     *
+     * @param array $conf Configuration array (optional)
+     *
+     * @return Renderer
+     */
+    public function init(array $conf = null)
+    {
+        if ($conf !== null) {
+            $this->setConf($conf);
+        }
 
-	/**
-	 * Constructor
-	 * @return Renderer
-	 */
-	public function __construct() {
-		if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey])) {
-			$this->init(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]));
-		}
-	}
+        $this->bannerText = null;
 
-	/**
-	 * Initialize this instance
-	 * @param array $conf Configuration array (optional)
-	 * @return Renderer
-	 */
-	public function init(array $conf = NULL) {
-		if ($conf !== NULL) {
-			$this->setConf($conf);
-		}
+        return $this;
+    }
 
-		$this->bannerText = NULL;
+    /**
+     * Setter for $conf
+     *
+     * @param array $conf Configuration array
+     *
+     * @return Renderer
+     */
+    public function setConf(array $conf)
+    {
+        $this->conf = $conf;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Setter for $conf
-	 * @param array $conf Configuration array
-	 * @return Renderer
-	 */
-	public function setConf(array $conf) {
-		$this->conf = $conf;
+    /**
+     * Whether banner is configured to be alwqys shown in Frontend
+     *
+     * @return bool
+     */
+    protected function isShownAlwaysInFrontend()
+    {
+        return (isset($this->conf['showFEBannerAlways']) && $this->conf['showFEBannerAlways'] == 1);
+    }
 
-		return $this;
-	}
+    /**
+     * Whether banner is configured to be shown in backend
+     *
+     * @return bool
+     */
+    protected function isShownInBackend()
+    {
+        return (isset($this->conf['showBEBanner']) && $this->conf['showBEBanner'] == 1);
+    }
 
-	/**
-	 * Whether banner is configured to be alwqys shown in Frontend
-	 * @return bool
-	 */
-	protected function isShownAlwaysInFrontend() {
-		return (isset($this->conf['showFEBannerAlways']) && $this->conf['showFEBannerAlways'] == 1);
-	}
+    /**
+     * Check whether a backend user is logged in
+     *
+     * @return bool
+     */
+    protected function isBeUserLoggedIn()
+    {
+        return ($GLOBALS['TSFE']->beUserLogin == 1);
+    }
 
-	/**
-	 * Whether banner is configured to be shown in backend
-	 * @return bool
-	 */
-	protected function isShownInBackend() {
-		return (isset($this->conf['showBEBanner']) && $this->conf['showBEBanner'] == 1);
-	}
+    /**
+     * Whether banner should be shown in frontend when a BE user is logged in
+     *
+     * @return bool
+     */
+    protected function isShownInFrontendForLoggedInBackendUser()
+    {
+        if (!empty($this->conf['showFEBannerIfBEUserIsLoggedIn'])) {
+            if ($this->isBeUserLoggedIn()) {
+                if (!empty($this->conf['showFEBannerForBEUserIdsOnly'])) {
+                    $userIdsArr = explode(',', $this->conf['showFEBannerForBEUserIdsOnly']);
 
-	/**
-	 * Check whether a backend user is logged in
-	 * @return bool
-	 */
-	protected function isBeUserLoggedIn() {
-		return ($GLOBALS['TSFE']->beUserLogin == 1);
-	}
+                    if (in_array($GLOBALS['BE_USER']->user['uid'], $userIdsArr)) {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            }
+        }
 
-	/**
-	 * Whether banner should be shown in frontend when a BE user is logged in
-	 * @return bool
-	 */
-	protected function isShownInFrontendForLoggedInBackendUser() {
-		if (!empty($this->conf['showFEBannerIfBEUserIsLoggedIn'])) {
-			if ($this->isBeUserLoggedIn()) {
-				if (!empty($this->conf['showFEBannerForBEUserIdsOnly'])) {
-					$userIdsArr = explode(',', $this->conf['showFEBannerForBEUserIdsOnly']);
+        return false;
+    }
 
-					if (in_array($GLOBALS['BE_USER']->user['uid'], $userIdsArr)) {
-						return TRUE;
-					}
-				} else {
-					return TRUE;
-				}
-			}
-		}
+    /**
+     * Whether banner should be shown in frontend when a BE user is logged in
+     *
+     * @return bool
+     */
+    protected function isShownInBackendForLoggedInBackendUser()
+    {
+        if (!empty($this->conf['showBEBannerForBEUserIdsOnly'])) {
+            $userIdsArr = explode(',', $this->conf['showBEBannerForBEUserIdsOnly']);
 
-		return FALSE;
-	}
+            if (in_array($GLOBALS['BE_USER']->user['uid'], $userIdsArr)) {
+                return true;
+            }
+        } else {
+            return true;
+        }
 
+        return false;
+    }
 
-	/**
-	 * Whether banner should be shown in frontend when a BE user is logged in
-	 * @return bool
-	 */
-	protected function isShownInBackendForLoggedInBackendUser() {
-		if (!empty($this->conf['showBEBannerForBEUserIdsOnly'])) {
-			$userIdsArr = explode(',', $this->conf['showBEBannerForBEUserIdsOnly']);
+    /**
+     * Check whether the extension configuration is actually loaded
+     *
+     * @return bool
+     */
+    protected function isConfigurationLoaded()
+    {
+        if (count($this->conf) == 0) {
+            GeneralUtility::devLog('No configuration found in localconf', 'cwenvbanner', 3);
 
-			if (in_array($GLOBALS['BE_USER']->user['uid'], $userIdsArr)) {
-				return TRUE;
-			}
-		} else {
-			return TRUE;
-		}
+            return false;
+        }
 
-		return FALSE;
-	}
+        return true;
+    }
 
-	/**
-	 * Check whether the extension configuration is actually loaded
-	 * @return bool
-	 */
-	protected function isConfigurationLoaded() {
-		if (count($this->conf) == 0) {
-			GeneralUtility::devLog('No configuration found in localconf', 'cwenvbanner', 3);
+    /**
+     * Whether the FE banner is to be shown
+     *
+     * @return bool
+     */
+    public function isFrontendBannerShown()
+    {
+        return $this->isConfigurationLoaded()
+        && ($this->isShownAlwaysInFrontend() || $this->isShownInFrontendForLoggedInBackendUser());
+    }
 
-			return FALSE;
-		}
+    /**
+     * Whether the BE banner is to be shown
+     *
+     * @return bool
+     */
+    public function isBackendBannerShown()
+    {
+        return $this->isShownInBackend() && $this->isShownInBackendForLoggedInBackendUser();
+    }
 
-		return TRUE;
-	}
+    /**
+     * Hooked into contentPostProc_output
+     *
+     * @param array $params Parameter array passed by caller
+     *
+     * @return void
+     */
+    public function contentPostProcOutputHook(array &$params)
+    {
+        $feobj = &$params['pObj'];
 
-	/**
-	 * Whether the FE banner is to be shown
-	 * @return bool
-	 */
-	public function isFrontendBannerShown() {
-		return $this->isConfigurationLoaded()
-		&& ($this->isShownAlwaysInFrontend() || $this->isShownInFrontendForLoggedInBackendUser());
-	}
+        // @TODO eId = ??
 
-	/**
-	 * Whether the BE banner is to be shown
-	 * @return bool
-	 */
-	public function isBackendBannerShown() {
-		return $this->isShownInBackend() && $this->isShownInBackendForLoggedInBackendUser();
-	}
+        if ($this->isFrontendBannerShown()) {
+            $outputArray = array();
+            preg_match('/<body[^<]*>/', $feobj->content, $outputArray);
 
-	/**
-	 * Hooked into contentPostProc_output
-	 * @param array $params Parameter array passed by caller
-	 * @return void
-	 */
-	public function contentPostProcOutputHook(array &$params) {
-		$feobj = &$params['pObj'];
+            // We expect the first occurence of <body> to be the correct one
+            // there should be only one anyway
+            $bodyTag = array_shift($outputArray);
 
-		// @TODO eId = ??
+            $feobj->content = str_replace($bodyTag, $bodyTag . $this->renderFrontendBanner(), $feobj->content);
+        }
 
-		if ($this->isFrontendBannerShown()) {
-			$outputArray = array();
-			preg_match('/<body[^<]*>/', $feobj->content, $outputArray);
+        $outputArray = array();
+        preg_match('/<title[^<]*>/', $feobj->content, $outputArray);
 
-			// We expect the first occurence of <body> to be the correct one
-			// there should be only one anyway
-			$bodyTag = array_shift($outputArray);
+        // We expect the first occurence of <title> to be the correct one
+        // there should be only one anyway
+        $titleTag = array_shift($outputArray);
 
-			$feobj->content = str_replace($bodyTag, $bodyTag . $this->renderFrontendBanner(), $feobj->content);
-		}
+        $feobj->content = str_replace($titleTag, $titleTag . $this->getBannerText() . ' - ', $feobj->content);
+    }
 
-		$outputArray = array();
-		preg_match('/<title[^<]*>/', $feobj->content, $outputArray);
+    /**
+     * Hooked into backendRenderPreProcess
+     *
+     * @param array $params Parameter array passed by caller
+     *
+     * @return void
+     */
+    public function backendRenderPreProcessHook(array &$params)
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = $this->getBannerText();
+    }
 
-		// We expect the first occurence of <title> to be the correct one
-		// there should be only one anyway
-		$titleTag = array_shift($outputArray);
+    /**
+     * Hooked into backendRenderPreProcess
+     *
+     * @param array $params Parameter array passed by caller
+     *
+     * @return void
+     */
+    public function backendRenderPostProcessHook(array &$params)
+    {
+        if ($this->isBackendBannerShown()) {
+            $outputArray = array();
+            preg_match('/<body[^<]*>/', $params['content'], $outputArray);
 
-		$feobj->content = str_replace($titleTag, $titleTag . $this->getBannerText() . ' - ', $feobj->content);
-	}
+            // We expect the first occurance of <body> to be the correct one
+            // there should be only one anyway
+            $bodyTag = array_shift($outputArray);
 
-	/**
-	 * Hooked into backendRenderPreProcess
-	 * @param array $params Parameter array passed by caller
-	 * @return void
-	 */
-	public function backendRenderPreProcessHook(array &$params) {
-		$GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'] = $this->getBannerText();
-	}
+            $params['content'] = str_replace($bodyTag, $bodyTag . $this->renderBackendBanner(), $params['content']);
+        }
+    }
 
-	/**
-	 * Hooked into backendRenderPreProcess
-	 * @param array $params Parameter array passed by caller
-	 * @return void
-	 */
-	public function backendRenderPostProcessHook(array &$params) {
-		if ($this->isBackendBannerShown()) {
-			$outputArray = array();
-			preg_match('/<body[^<]*>/', $params['content'], $outputArray);
+    /**
+     * Return the inline css
+     *
+     * @return string
+     */
+    protected function getInlineCss()
+    {
+        if (!isset($this->conf['bannerStyle'])
+            || $this->conf['bannerStyle'] == 'custom'
+            || !isset($this->bannerStyles[$this->conf['bannerStyle']])
+        ) {
+            $style = $this->conf['bannerInlineCss'];
+        } else {
+            $style = $this->bannerStyles[$this->conf['bannerStyle']];
+        }
 
-			// We expect the first occurance of <body> to be the correct one
-			// there should be only one anyway
-			$bodyTag = array_shift($outputArray);
+        if (empty($style)) {
+            return '';
+        } else {
+            return ' style="' . $style . '"';
+        }
+    }
 
-			$params['content'] = str_replace($bodyTag, $bodyTag . $this->renderBackendBanner(), $params['content']);
-		}
-	}
+    /**
+     * Returns the environment name
+     *
+     * @return string
+     */
+    protected function getEnvName()
+    {
+        if (!empty($this->conf['takeEnvNameFromServerVariable'])
+            && isset($GLOBALS['_SERVER'][$this->conf['takeEnvNameFromServerVariable']])
+        ) {
+            return $GLOBALS['_SERVER'][$this->conf['takeEnvNameFromServerVariable']];
+        }
 
-	/**
-	 * Return the inline css
-	 * @return string
-	 */
-	protected function getInlineCss() {
-		if (!isset($this->conf['bannerStyle'])
-				|| $this->conf['bannerStyle'] == 'custom'
-				|| !isset($this->bannerStyles[$this->conf['bannerStyle']])) {
-			$style = $this->conf['bannerInlineCss'];
-		} else {
-			$style = $this->bannerStyles[$this->conf['bannerStyle']];
-		}
+        return (!empty($this->conf['envName'])) ? $this->conf['envName'] : 'n/a';
+    }
 
-		if (empty($style)) {
-			return '';
-		} else {
-			return ' style="' . $style . '"';
-		}
-	}
+    /**
+     * Returns the banner text
+     *
+     * @return string
+     */
+    protected function getBannerText()
+    {
+        if (!empty($this->bannerText)) {
+            return $this->bannerText;
+        }
 
-	/**
-	 * Returns the environment name
-	 * @return string
-	 */
-	protected function getEnvName() {
-		if (!empty($this->conf['takeEnvNameFromServerVariable'])
-				&& isset($GLOBALS['_SERVER'][$this->conf['takeEnvNameFromServerVariable']])
-		) {
-			return $GLOBALS['_SERVER'][$this->conf['takeEnvNameFromServerVariable']];
-		}
+        $siteName = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
+        $envName = $this->getEnvName();
 
-		return (!empty($this->conf['envName'])) ? $this->conf['envName'] : 'n/a';
-	}
+        if (!empty($this->conf['bannerTemplate'])) {
+            $this->bannerText = str_replace(
+                array('###sitename###', '###env###'),
+                array($siteName, $envName),
+                $this->conf['bannerTemplate']
+            );
+        } else {
+            $this->bannerText = $siteName . ' - ' . $envName;
+        }
 
-	/**
-	 * Returns the banner text
-	 * @return string
-	 */
-	protected function getBannerText() {
-		if (!empty($this->bannerText)) {
-			return $this->bannerText;
-		}
+        return $this->bannerText;
+    }
 
-		$siteName	= $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];
-		$envName    = $this->getEnvName();
+    /**
+     * Renders the banner
+     *
+     * @return string
+     */
+    protected function renderBanner()
+    {
+        return '<div' . $this->getInlineCss() . '>' . $this->getBannerText() . '</div>';
+    }
 
-		if (!empty($this->conf['bannerTemplate'])) {
-			$this->bannerText = str_replace(
-					array('###sitename###', '###env###'),
-					array($siteName, $envName),
-					$this->conf['bannerTemplate']
-			);
-		} else {
-			$this->bannerText = $siteName . ' - ' . $envName;
-		}
+    /**
+     * Render the BE Banner
+     *
+     * @return string
+     */
+    public function renderBackendBanner()
+    {
+        // right now, both banners are the same
+        return $this->renderBanner();
+    }
 
-		return $this->bannerText;
-	}
-
-	/**
-	 * Renders the banner
-	 * @return string
-	 */
-	protected function renderBanner() {
-		return '<div' . $this->getInlineCss() . '>' . $this->getBannerText() . '</div>';
-	}
-
-	/**
-	 * Render the BE Banner
-	 * @return string
-	 */
-	public function renderBackendBanner() {
-		// right now, both banners are the same
-		return $this->renderBanner();
-	}
-
-	/**
-	 * Render the FE Banner
-	 * @return string
-	 */
-	public function renderFrontendBanner() {
-		// right now, both banners are the same
-		return $this->renderBanner();
-	}
+    /**
+     * Render the FE Banner
+     *
+     * @return string
+     */
+    public function renderFrontendBanner()
+    {
+        // right now, both banners are the same
+        return $this->renderBanner();
+    }
 }
