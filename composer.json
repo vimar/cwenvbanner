@@ -20,7 +20,7 @@
   "license": "GPL-2.0+",
   "require": {
     "typo3/cms-core": "^6.2.14|^7.6",
-    "typo3-ci/typo3cms": "dev-master"
+    "typo3-ci/typo3cms": "^6.2.4"
   },
   "require-dev": {
     "namelesscoder/typo3-repository-client": "1.1.x-dev",
@@ -54,9 +54,6 @@
     ]
   },
   "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    },
     "typo3/cms": {
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"

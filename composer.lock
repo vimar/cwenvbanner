@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dd2bd4b9eea46e99a7868a3dbf4e45ad",
-    "content-hash": "de3a103e6630e9f401545b2e2c6da591",
+    "hash": "92c2a5eaced944683ae118fb752ad8e2",
+    "content-hash": "61d6f110b28e64fcb6ea29a65f7f60da",
     "packages": [
         {
             "name": "cogpowered/finediff",
@@ -710,7 +710,7 @@
         },
         {
             "name": "typo3-ci/typo3cms",
-            "version": "dev-master",
+            "version": "6.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/typo3-ci/TYPO3CMS.git",
@@ -2140,7 +2140,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "typo3-ci/typo3cms": 20,
         "namelesscoder/typo3-repository-client": 20,
         "mikey179/vfsstream": 20
     },

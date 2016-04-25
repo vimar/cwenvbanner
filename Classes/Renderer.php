@@ -55,7 +55,8 @@ class Renderer  {
 	 * Constructor
 	 * @return Renderer
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey])) {
 			$this->init(unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]));
 		}
@@ -138,7 +139,8 @@ class Renderer  {
 	 * Whether banner should be shown in frontend when a BE user is logged in
 	 * @return bool
 	 */
-	protected function isShownInBackendForLoggedInBackendUser() {
+	protected function isShownInBackendForLoggedInBackendUser()
+	{
 		if (!empty($this->conf['showBEBannerForBEUserIdsOnly'])) {
 			$userIdsArr = explode(',', $this->conf['showBEBannerForBEUserIdsOnly']);
 
