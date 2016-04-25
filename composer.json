@@ -24,7 +24,8 @@
   "require-dev": {
     "namelesscoder/typo3-repository-client": "1.1.x-dev",
     "mikey179/vfsStream": "1.4.*@dev",
-    "phpunit/phpunit": "~4.7.0"
+    "phpunit/phpunit": "~4.7.0",
+    "squizlabs/php_codesniffer": "2.*"
   },
   "autoload": {
     "psr-4": {
