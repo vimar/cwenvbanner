@@ -65,7 +65,7 @@ script:
   #  export typo3DatabasePassword="";
   #  find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; .Build/bin/phpunit --colors  -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/FunctionalTests.xml {}'
 
-   - >
-     echo;
-     echo "Running code sniffer";
-     .Build/bin/phpcs --standard=.Build/vendor/typo3-ci/typo3cms/ruleset.xml Classes/
+  - >
+    echo;
+    echo "Running code sniffer";
+    .Build/bin/phpcs --standard=.Build/vendor/typo3-ci/typo3cms/ruleset.xml Classes/
