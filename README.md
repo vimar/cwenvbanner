@@ -19,7 +19,7 @@ Version 1.0.0 finally dropped Typo3 4.x support, added Typo3 7.x support and was
 
 ### Older versions
 
-*Note:* A Typo3 4.7 compatible version can still be found here: [https://github.com/carstenwindler/cwenvbanner/tree/feature-typo3-7-compat](https://github.com/carstenwindler/cwenvbanner/tree/feature-typo3-7-compat)
+*Note:* A Typo3 4.7 compatible version can still be found here: [https://github.com/carstenwindler/cwenvbanner/tree/feature-typo3-7-compat](https://github.com/carstenwindler/cwenvbanner/tree/typo3-4.x-compat)
 
 With version 0.1.0, cwenvbanner offers you predefined banner styles (well, basically 3 different colours: Red, Yellow, Green) to setup the extension on different environments even quicker.
 
