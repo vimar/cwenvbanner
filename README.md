@@ -1,13 +1,13 @@
-# cwenvbanner v1.0.0
+# cwenvbanner [![Build Status](https://api.travis-ci.org/carstenwindler/cwenvbanner.svg?branch=master)](https://travis-ci.org/carstenwindler/cwenvbanner)
 
-The documentation is not yet fully written. This text file gives you a short overview until it is available.
+The documentation is not yet fully written. Probably it never will. This text file gives you a short overview, actually this extension is very simple.
 
 ## I want facts. Quick. (aka Impatient Programmers Abstract)
 
 * Adds customizable banner to both Backend and Frontend with environment identifier (e.g. DEV)
 * Prepends environment identifier to the Frontend page title
 * Compatible with Typo3 6.x and 7.x
-* I'm happy to get feedback or bugfixes! https://github.com/carstenwindler/cwenvbanner
+* I'm happy to get feedback or bugfixes! [https://github.com/carstenwindler/cwenvbanner](https://github.com/carstenwindler/cwenvbanner)
 
 ## About this extension
 
@@ -15,9 +15,11 @@ This extension was build for those who often work on multiple Typo3 projects at 
 
 ## Whats new
 
-Version 1.0.0 finally dropped Typo3 4.x support, added Typo3 7.x support and was refactored to support Typo3 Composer Mode. 
+Version 1.0.0 finally dropped Typo3 4.x support, added Typo3 7.x support and was refactored to support Typo3 Composer Mode.
 
 ### Older versions
+
+*Note:* A Typo3 4.7 compatible version can still be found here: [https://github.com/carstenwindler/cwenvbanner/tree/feature-typo3-7-compat](https://github.com/carstenwindler/cwenvbanner/tree/feature-typo3-7-compat)
 
 With version 0.1.0, cwenvbanner offers you predefined banner styles (well, basically 3 different colours: Red, Yellow, Green) to setup the extension on different environments even quicker.
 

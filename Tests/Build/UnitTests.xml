@@ -15,6 +15,12 @@
         <env name="TYPO3_PATH_WEB" value=".Build/Web"/>
     </php>
 
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../../Classes</directory>
+        </whitelist>
+    </filter>
+
     <testsuites>
         <testsuite name="EXT:cwenvbanner tests">
             <directory>../Unit/</directory>
