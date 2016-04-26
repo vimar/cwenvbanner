@@ -1,0 +1,62 @@
+{
+  "name": "carstenwindler/cwenvbanner",
+  "type": "typo3-cms-extension",
+  "description": "Adds a small Banner in both FE and BE and changes title tag to easier distinct between different Typo3 installations",
+  "keywords": [
+    "TYPO3",
+    "extension",
+    "banner",
+    "environment"
+  ],
+  "homepage": "http://carstenwindler.de",
+  "authors": [
+    {
+      "name": "Carsten Windler",
+      "email": "carsten@carstenwindler.de",
+      "role": "Developer",
+      "homepage": "http://carstenwindler.de"
+    }
+  ],
+  "license": "GPL-2.0+",
+  "require": {
+    "typo3/cms-core": "^6.2.14|^7.6"
+  },
+  "require-dev": {
+    "namelesscoder/typo3-repository-client": "1.1.x-dev",
+    "mikey179/vfsStream": "1.4.*@dev",
+    "phpunit/phpunit": "~4.7.0",
+    "squizlabs/php_codesniffer": "2.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "CarstenWindler\\Cwenvbanner\\": "Classes"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CarstenWindler\\Cwenvbanner\\Tests\\": "Tests",
+      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/",
+      "TYPO3\\CMS\\Fluid\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/fluid/Tests/"
+    }
+  },
+  "replace": {
+    "cwenvbanner": "self.version",
+    "typo3-ter/cwenvbanner": "self.version"
+  },
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/Web/typo3conf/ext/",
+      "[ -L .Build/Web/typo3conf/ext/cwenvbanner ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/cwenvbanner"
+    ]
+  },
+  "extra": {
+    "typo3/cms": {
+      "cms-package-dir": "{$vendor-dir}/typo3/cms",
+      "web-dir": ".Build/Web"
+    }
+  }
+}

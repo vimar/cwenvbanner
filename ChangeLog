@@ -1,3 +1,9 @@
+2016-04-26  Carsten Windler
+	* Version 1.0.0
+	* finally dropped Typo3 4.x support
+	* added Typo3 7.x support
+	* refactored to support Typo3 Composer Mode.
+
 2014-08-21  Carsten Windler  <carsten@carstenwindler.de>
 
 	* new version: 0.1.0
