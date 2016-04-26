@@ -19,22 +19,22 @@
   ],
   "license": "GPL-2.0+",
   "require": {
-    "typo3/cms-core": "^6.2.14|^7.6",
-    "typo3-ci/typo3cms": "dev-master"
+    "typo3/cms-core": "^6.2.14|^7.6"
   },
   "require-dev": {
     "namelesscoder/typo3-repository-client": "1.1.x-dev",
     "mikey179/vfsStream": "1.4.*@dev",
-    "phpunit/phpunit": "~4.7.0"
+    "phpunit/phpunit": "~4.7.0",
+    "squizlabs/php_codesniffer": "2.*"
   },
   "autoload": {
     "psr-4": {
-      "Carstenwindler\\Cwenvbanner\\": "Classes"
+      "CarstenWindler\\Cwenvbanner\\": "Classes"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Carstenwindler\\Cwenvbanner\\Tests\\": "Tests",
+      "CarstenWindler\\Cwenvbanner\\Tests\\": "Tests",
       "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/",
       "TYPO3\\CMS\\Fluid\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/fluid/Tests/"
     }
@@ -54,9 +54,6 @@
     ]
   },
   "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    },
     "typo3/cms": {
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
