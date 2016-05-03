@@ -222,11 +222,10 @@ class Renderer
      */
     public function contentPostProcOutputHook(array &$params)
     {
-        $feobj = &$params['pObj'];
 
         // @TODO eId = ??
-
         if ($this->isFrontendBannerShown()) {
+            $feobj = &$params['pObj'];
             $outputArray = array();
             preg_match('/<body[^<]*>/', $feobj->content, $outputArray);
 
@@ -235,16 +234,16 @@ class Renderer
             $bodyTag = array_shift($outputArray);
 
             $feobj->content = str_replace($bodyTag, $bodyTag . $this->renderFrontendBanner(), $feobj->content);
+
+            $outputArray = array();
+            preg_match('/<title[^<]*>/', $feobj->content, $outputArray);
+
+            // We expect the first occurence of <title> to be the correct one
+            // there should be only one anyway
+            $titleTag = array_shift($outputArray);
+
+            $feobj->content = str_replace($titleTag, $titleTag . $this->getBannerText() . ' - ', $feobj->content);
         }
-
-        $outputArray = array();
-        preg_match('/<title[^<]*>/', $feobj->content, $outputArray);
-
-        // We expect the first occurence of <title> to be the correct one
-        // there should be only one anyway
-        $titleTag = array_shift($outputArray);
-
-        $feobj->content = str_replace($titleTag, $titleTag . $this->getBannerText() . ' - ', $feobj->content);
     }
 
     /**
