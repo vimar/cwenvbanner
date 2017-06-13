@@ -1,5 +1,5 @@
 {
-  "name": "carstenwindler/cwenvbanner",
+  "name": "vimar/cwenvbanner",
   "type": "typo3-cms-extension",
   "description": "Adds a small Banner in both FE and BE and changes title tag to easier distinct between different Typo3 installations",
   "keywords": [
