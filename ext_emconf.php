@@ -16,7 +16,7 @@ $EM_CONF[$_EXTKEY] = array(
         'different Typo3 installations (hopefully no more "Ups - I was on Live all the time...")',
     'category' => 'misc',
     'shy' => 1,
-    'version' => '0.0.3',
+    'version' => '0.1.1',
     'dependencies' => '',
     'conflicts' => '',
     'priority' => '',
